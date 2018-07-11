@@ -14,6 +14,7 @@ class App extends Component {
     this.state = {
       movies: [], //movieData
       watchedMovies: [],
+      notWatchedMovies: [],
       textSearch: '',
       textInput: ''
     };
@@ -30,7 +31,9 @@ class App extends Component {
   handleInput() {
     let movie = {'title': this.state.textInput, 'watched': false};
     let copyArr = this.state.movies.concat(movie);
-    this.setState({movies: copyArr});
+    this.setState({
+      movies: copyArr
+    });
   }
 
   handleInputChange(e) {
@@ -68,12 +71,41 @@ class App extends Component {
     });
   }
 
+  //change these two tab methods
+  //now they are overriding the movies, which destroys data we 
+  //want to keep
+  //refactor to move movies to respective movie lists in state
+  handleWatchedTab() {
+    let watchedArr = [];
+    for (let i = 0; i < this.state.movies.length; i++) {
+      if (this.state.movies[i].watched) {
+        watchedArr.push(this.state.movies[i]);
+      }
+    }
+    this.setState({
+      movies: watchedArr
+    });
+  }
+
+  handleNotWatchedTab() {
+    let notWatchedArr = [];
+    for (let i = 0; i < this.state.movies.length; i++) {
+      if (!this.state.movies[i].watched) {
+        notWatchedArr.push(this.state.movies[i]);
+      }
+    }
+    this.setState({
+      movies: notWatchedArr
+    });
+  }
+
   render() {
     return (
       <div>
         <h1>Movie</h1>
         <Insert id="input" handleInputChange={this.handleInputChange} handleInput={this.handleInput} />
         <Search id="search" handleSearchChange={this.handleSearchChange} handleSearch={this.handleSearch} />
+        <button id="watched" onClick={() => this.handleWatchedTab()}>Watched</button><button id="notWatched" onClick={() => this.handleNotWatchedTab()}>Not Watched</button>
         <MovieList id="list" movies={this.state.movies} handleWatchedToggle={this.handleWatchedToggle}/>
       </div>
     );
